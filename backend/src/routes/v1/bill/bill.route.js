@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router();
 
 // const { singleFileUpload } = require("../../../../helpers/upload");
-const {   billCreateController } = require("../../../controllers");
+const {   billCreateController, billPatientFlowController } = require("../../../controllers");
 const { singleFileUpload } = require("../../../helpers/upload");
 
 
@@ -19,6 +19,13 @@ router.get("/list-bill-view", billCreateController.billView);
 // router.put("/hospital-bill-update-logo",  singleFileUpload('/hospitalImg', 'hospital_logo'), billCreateController.updateHospitalLogo);
 // router.put("/hospital-bill-update", billCreateController.updateBill);
 // router.put("/hospital-bill-update-hospital", billCreateController.updateHospital);
+
+
+
+// in patient pannel of Bill
+router.get("/list-bill-view-unpaid", billPatientFlowController.billViewOfUnpaid);
+router.get("/list-bill-view-paid", billPatientFlowController.billViewOfPaid);
+
 
 
 

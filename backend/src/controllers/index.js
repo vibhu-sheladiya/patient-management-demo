@@ -40,4 +40,10 @@ module.exports.telecommunicationControllerPatientFlow = require("./telecommunica
 
 module.exports.billCreateController = require("./bill/bill.controller");
 
+module.exports.billPatientFlowController = require("./bill/patient.flow.bill.controller");
+
+module.exports.paymentController = require("./payment/payment.controller");
+
+
+
 

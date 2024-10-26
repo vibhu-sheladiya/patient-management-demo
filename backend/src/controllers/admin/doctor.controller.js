@@ -288,7 +288,7 @@ const listDoctorAdmin = async (req, res) => {
 const searchDoctorByAdmin = async (req, res) => {
   try {
     const { query } = req.query; // Get the search query from the request
-    const { adminId } = req.body; // Get the adminId from the request body
+    const { adminId } = req.query; // Get the adminId from the request body
 
     // Check if adminId is provided
     if (!adminId) {

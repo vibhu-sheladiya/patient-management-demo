@@ -177,7 +177,6 @@ const monitorBill = async (req, res) => {
 
 
 
-
 const billView = async (req, res) => {
   try {
     const bills = await Bill.find(); // Fetch all records from the Bill collection

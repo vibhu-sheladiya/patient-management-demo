@@ -109,7 +109,7 @@ const searchDoctorAndPatientist = async (req, res) => {
 
   const allDoctorList = async (req, res) => {
     try {
-      const { adminId } = req.body; // Get the adminId from request body
+      const { adminId } = req.query; // Get the adminId from request body
   
       // Check if adminId is provided
       if (!adminId) {
@@ -139,7 +139,7 @@ const searchDoctorAndPatientist = async (req, res) => {
   
   const allDoctorListId = async (req, res) => {
     try {
-      const { adminId, doctorId } = req.body; // Get adminId and doctorId from request body
+      const { adminId, doctorId } = req.query; // Get adminId and doctorId from request body
   
       // Check if adminId is provided
       if (!adminId) {
@@ -182,7 +182,7 @@ const searchDoctorAndPatientist = async (req, res) => {
   
   const deleteDoctor = async (req, res) => {
     try {
-      const { doctorId, adminId } = req.body; // Assuming adminId is passed for authorization checks
+      const { doctorId, adminId } = req.query; // Assuming adminId is passed for authorization checks
       const admin = await Admin.findById(adminId);
       // Find the doctor by ID
       const doctor = await Doctor.findById(doctorId);
@@ -219,7 +219,7 @@ const searchDoctorAndPatientist = async (req, res) => {
   const getTodayAppointments = async (req, res) => {
     try {
               // Get doctorId from request
-              const { adminId } = req.body;
+              const { adminId } = req.query;
 
               // Validate doctorId
               if (!adminId) {
@@ -273,7 +273,7 @@ const getUpcomingAppointments = async (req, res) => {
   try {
 
         // Get doctorId from request
-        const { adminId } = req.body;
+        const { adminId } = req.query;
 
         // Validate doctorId
         if (!adminId) {
@@ -324,7 +324,7 @@ const getPreviousAppointments = async (req, res) => {
   try {
 
         // Get doctorId from request
-        const { adminId } = req.body;
+        const { adminId } = req.query;
 
         // Validate doctorId
         if (!adminId) {
@@ -372,7 +372,7 @@ const getCanceledAppointments = async (req, res) => {
   try {
 
         // Get doctorId from request
-        const { adminId } = req.body;
+        const { adminId } = req.query;
 
         // Validate doctorId
         if (!adminId) {
@@ -413,7 +413,7 @@ const getCanceledAppointments = async (req, res) => {
 const getAppointmentDetailsOfPatientById = async (req, res) => {
   try {
       // Extract appointmentId from the request body
-      const { appointmentId } = req.body; // Assuming appointmentId is sent in the body
+      const { appointmentId } = req.query; // Assuming appointmentId is sent in the body
 
       // Validate that the appointmentId is provided
       if (!appointmentId) {
@@ -723,7 +723,12 @@ const getAppointmentDetailsOfPatientById = async (req, res) => {
 
   module.exports = {
     searchDoctorAndPatientist,deleteDoctor,
-    allDoctorList,allDoctorListId,searchDoctor,getTodayAppointments,getUpcomingAppointments,getPreviousAppointments,
+    allDoctorList,
+    allDoctorListId,
+    searchDoctor,
+    getTodayAppointments,
+    getUpcomingAppointments,
+    getPreviousAppointments,
     getCanceledAppointments,
     getAppointmentDetailsOfPatientById,
     // getTodayAppointmentsSearch,getUpcomingAppointmentsSearch,
