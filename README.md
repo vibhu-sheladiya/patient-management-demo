@@ -11,6 +11,7 @@ This Healthcare Management System is a web application designed to facilitate ef
 Features
 
 👨‍💼 Admin Features
+
 Create Hospitals: Admin can add new hospitals to the system. 🏥
 Manage Doctors: Admin can create, update, or remove doctor profiles. 🩺
 Manage Patients: Admin can create, update, or remove patient profiles. 👩‍⚕️
@@ -24,18 +25,25 @@ Chat: Real-time chat functionality with patients using Socket.IO. 💬
 Audio and Video Calls: Conduct audio and video consultations with patients using Socket.IO. 📞
 Manage Test Reports: Doctors can edit and manage test reports related to their patients. 📝
 Edit Appointments: Doctors can edit appointment details as needed. 📅
+
 👩‍⚕️ Patient Features
+
 Create Account: Patients can create their own accounts to access the system. 🆕
 Book Appointments: Patients can schedule appointments with doctors. 📅
 Chat: Patients can communicate with their doctors in real-time using Socket.IO. 💬
 Audio and Video Calls: Patients can have audio and video consultations with doctors through Socket.IO. 📞
 Payment Integration: Patients can make payments for consultations using PayPal. 💳
+
+
 Technologies Used
+
 Frontend: HTML, CSS, JavaScript (React/Vue/Angular) 🌐
 Backend: Node.js, Express 🚀
 Database: MongoDB 🗄️
 Real-time Communication: Socket.IO ⚡
 Payment Integration: PayPal API 💵
+
+
 Installation
 Prerequisites
 Node.js 🌳
@@ -72,10 +80,14 @@ npm start
 Open your browser and navigate to http://localhost:9500 to access the application. 🌍
 
 Usage
+
 Admin: Log in as an admin to create hospitals, manage doctors, and patients. 🏢
+
 Doctor: Log in as a doctor to manage your patients and conduct consultations. 🩺
+
 Patient: Sign up to create an account, book appointments, and chat with doctors. 👥
 Contributing
+
 If you would like to contribute to this project, please follow these steps:
 
 Fork the repository. 🍴
