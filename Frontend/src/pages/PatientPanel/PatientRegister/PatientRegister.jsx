@@ -3,7 +3,6 @@ import AuthSlider from "../../../components/auth-slider/AuthSlider";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { registerValidationSchema } from "../../../validation/AuthValidation";
 import "./PatientRegister.scss";
 
 const PatientRegister = () => {
@@ -18,7 +17,6 @@ const PatientRegister = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
-
   const initialValues = {
     firstName: "",
     lastName: "",
@@ -26,55 +24,88 @@ const PatientRegister = () => {
     country: "",
     state: "",
     city: "",
-    hospital: "",
+    hospitalId: "",
     email: "",
     password: "",
     confirmPassword: "",
     agreeToTerms: false,
+    age: "",
+    gender: "",
+    bloodgroup: "",
+    height: "",
+    weight: "",
+    birthdate: "",
+    patientAddress: "",
   };
 
-  const handleSubmit = (values) => {
-    console.log("Form values:", values);
-    // Add your register logic here (e.g., API call)
+  const handleSubmit = async (values) => {
+    const payload = {
+      first_name: values.firstName,
+      last_name: values.lastName,
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+      email: values.email,
+      phone_number: values.phoneNumber,
+      country: values.country,
+      state: values.state,
+      city: values.city,
+      age: values.age,
+      patient_address: values.patientAddress,
+      gender: values.gender, // Ensure this is the correct format
+      dob: values.birthdate,
+      blood_group: values.bloodgroup,
+      weight: values.weight,
+      height: values.height,
+    };
+    console.log(payload);
+    dob: new Date(values.birthdate).toISOString().split("T")[0],
+      console.log("Form values:", values);
+    try {
+      const response = await axios.post(
+        "http://localhost:9500/v1/patient/create-patient",
+        payload
+      );
+      // Optionally, you can redirect or show a success message
+    } catch (error) {
+      console.error(
+        "Registration error:",
+        error.response?.data || error.message
+      );
+      // Handle errors here (e.g., show a message to the user)
+    }
   };
 
-  // Fetch countries on component mount
   useEffect(() => {
-    fetchCountries();
-    fetchHospitals(); // Fetch hospital list
+    fetchCountriesAndStates();
+    fetchHospitals();
   }, []);
 
-  const fetchCountries = async () => {
+  const fetchCountriesAndStates = async () => {
     try {
-      const response = await axios.get("https://restcountries.com/v3.1/all");
-      const countryList = response.data.map((country) => ({
-        name: country.name.common,
-        code: country.cca2,
+      const response = await axios.get(
+        "https://countriesnow.space/api/v0.1/countries/states"
+      );
+      const countryList = response.data.data.map((country) => ({
+        name: country.name,
+        iso3: country.iso3,
+        states: country.states,
       }));
       setCountries(countryList);
     } catch (error) {
-      console.error("Error fetching countries:", error);
+      console.error("Error fetching countries and states:", error);
     }
   };
 
-  const fetchStates = async (countryCode) => {
+  const fetchCities = async (countryName, stateName) => {
     try {
-      const response = await axios.get(
-        `https://example.com/api/states/${countryCode}`
+      const response = await axios.post(
+        "https://countriesnow.space/api/v0.1/countries/state/cities",
+        {
+          country: countryName,
+          state: stateName,
+        }
       );
-      setStates(response.data.states);
-      setCities([]); // Clear cities when country changes
-    } catch (error) {
-      console.error("Error fetching states:", error);
-    }
-  };
-
-  const fetchCities = async (stateCode) => {
-    try {
-      const response = await axios.get(
-        `https://example.com/api/cities/${stateCode}`
-      );
-      setCities(response.data.cities);
+      setCities(response.data.data);
     } catch (error) {
       console.error("Error fetching cities:", error);
     }
@@ -82,13 +113,14 @@ const PatientRegister = () => {
 
   const fetchHospitals = async () => {
     try {
-      const response = await axios.get("https://example.com/api/hospitals");
-      setHospitals(response.data.hospitals);
+      const response = await axios.get(
+        "http://localhost:9500/v1/hospital/get-hospitals"
+      );
+      setHospitals(response.data.data);
     } catch (error) {
       console.error("Error fetching hospitals:", error);
     }
   };
-
   return (
     <section className="register-section">
       <div className="container-fluid vh-100 d-flex">
@@ -99,7 +131,7 @@ const PatientRegister = () => {
               <h2 className="mb-4 register-title">Registration</h2>
               <Formik
                 initialValues={initialValues}
-                validationSchema={registerValidationSchema}
+                validationSchema={null}
                 onSubmit={handleSubmit}
               >
                 {({ errors, touched, values, setFieldValue }) => (
@@ -318,80 +350,84 @@ const PatientRegister = () => {
                     {/* Country, State, and City */}
                     <div className="row">
                       <div className="col-md-4 mb-3">
-                        <div className="form-floating">
-                          <Field
-                            as="select"
-                            name="country"
-                            className="form-select"
-                            onChange={(e) => {
-                              const selectedCountry = e.target.value;
-                              setFieldValue("country", selectedCountry);
-                              fetchStates(selectedCountry); // Fetch states based on country
-                            }}
-                          >
-                            <option value="">Select Country</option>
-                            {countries.map((country) => (
-                              <option key={country.code} value={country.code}>
-                                {country.name}
-                              </option>
-                            ))}
-                          </Field>
-                          <label htmlFor="country">Country</label>
-                          <ErrorMessage
-                            name="country"
-                            component="div"
-                            className="invalid-feedback"
-                          />
-                        </div>
+                        <Field
+                          as="select"
+                          name="country"
+                          className={`form-select ${
+                            errors.country && touched.country
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          onChange={(e) => {
+                            const selectedCountry = e.target.value;
+                            setFieldValue("country", selectedCountry);
+                            const selectedCountryObj = countries.find(
+                              (country) => country.name === selectedCountry
+                            );
+                            setStates(selectedCountryObj?.states || []); // Update states based on selected country
+                          }}
+                        >
+                          <option value="">Select Country</option>
+                          {countries.map((country) => (
+                            <option key={country.iso3} value={country.name}>
+                              {country.name}
+                            </option>
+                          ))}
+                        </Field>
+                        <ErrorMessage
+                          name="country"
+                          component="div"
+                          className="invalid-feedback"
+                        />
                       </div>
+
                       <div className="col-md-4 mb-3">
-                        <div className="form-floating">
-                          <Field
-                            as="select"
-                            name="state"
-                            className="form-select"
-                            onChange={(e) => {
-                              const selectedState = e.target.value;
-                              setFieldValue("state", selectedState);
-                              fetchCities(selectedState); // Fetch cities based on state
-                            }}
-                          >
-                            <option value="">Select State</option>
-                            {states.map((state) => (
-                              <option key={state.code} value={state.code}>
-                                {state.name}
-                              </option>
-                            ))}
-                          </Field>
-                          <label htmlFor="state">State</label>
-                          <ErrorMessage
-                            name="state"
-                            component="div"
-                            className="invalid-feedback"
-                          />
-                        </div>
+                        <Field
+                          as="select"
+                          name="state"
+                          className={`form-select ${
+                            errors.state && touched.state ? "is-invalid" : ""
+                          }`}
+                          onChange={(e) => {
+                            const selectedState = e.target.value;
+                            setFieldValue("state", selectedState);
+                            fetchCities(values.country, selectedState); // Fetch cities based on selected state
+                          }}
+                        >
+                          <option value="">Select State</option>
+                          {states.map((state) => (
+                            <option key={state.state_code} value={state.name}>
+                              {state.name}
+                            </option>
+                          ))}
+                        </Field>
+                        <ErrorMessage
+                          name="state"
+                          component="div"
+                          className="invalid-feedback"
+                        />
                       </div>
+
                       <div className="col-md-4 mb-3">
-                        <div className="form-floating">
-                          <Field
-                            as="select"
-                            name="city"
-                            className="form-select"
-                          >
-                            <option value="">Select City</option>
-                            {cities.map((city) => (
-                              <option key={city.code} value={city.code}>
-                                {city.name}
-                              </option>
-                            ))}
-                          </Field>
-                          <label htmlFor="city">City</label>
-                          <ErrorMessage
-                            name="city"
-                            component="div"
-                            className="invalid-feedback"
-                          />
-                        </div>
+                        <Field
+                          as="select"
+                          name="city"
+                          className={`form-select ${
+                            errors.city && touched.city ? "is-invalid" : ""
+                          }`}
+                        >
+                          <option value="">Select City</option>
+                          {cities.map((city, index) => (
+                            <option key={index} value={city}>
+                              {city}
+                            </option>
+                          ))}
+                        </Field>
+                        <ErrorMessage
+                          name="city"
+                          component="div"
+                          className="invalid-feedback"
+                        />
                       </div>
                     </div>
 
@@ -399,19 +435,22 @@ const PatientRegister = () => {
                     <div className="form-floating mb-3">
                       <Field
                         as="select"
-                        name="hospital"
-                        className="form-select"
+                        name="hospitalId" // Updated to hospitalId
+                        className={`form-select ${
+                          errors.hospitalId && touched.hospitalId
+                            ? "is-invalid"
+                            : ""
+                        }`}
                       >
                         <option value="">Select Hospital</option>
                         {hospitals.map((hospital) => (
-                          <option key={hospital.id} value={hospital.id}>
-                            {hospital.name}
+                          <option key={hospital._id} value={hospital._id}>
+                            {hospital.hospital_name}
                           </option>
                         ))}
                       </Field>
-                      <label htmlFor="hospital">Hospital</label>
                       <ErrorMessage
-                        name="hospital"
+                        name="hospitalId" // Updated to hospitalId
                         component="div"
                         className="invalid-feedback"
                       />

@@ -3,11 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { resetPasswordValidationSchema } from "../../../validation/AuthValidation";
 import AuthSlider from "../../../components/auth-slider/AuthSlider";
 import "./DoctorResetPassword.scss";
-
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 const DoctorResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-
+  const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -17,14 +18,44 @@ const DoctorResetPassword = () => {
   };
 
   const initialValues = {
-    password: "",
+    newPassword: "",
     confirmPassword: "",
   };
 
-  const handleSubmit = (values) => {
-    console.log("Form submitted with values: ", values);
-    // Handle OTP navigation or reset logic here
+  const handleSubmit = async (values) => {
+    const adminId = localStorage.getItem("doctorId");
+    const payload = {
+      doctorId: adminId,
+      newPassword: values.newPassword,
+      confirmPassword: values.confirmPassword,
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:9500/v1/doctor/reset-password",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        alert("Password reset successful");
+        console.log("Password reset successful");
+        // Optionally redirect or display success message here
+        navigate("/doctor-login");
+      } else {
+        console.log("Password reset failed");
+        // Handle error response here
+      }
+    } catch (error) {
+      console.error("Error during password reset:", error);
+    }
   };
+
   return (
     <section className="reset-pass-section">
       <div className="container-fluid vh-100 d-flex">
@@ -42,14 +73,14 @@ const DoctorResetPassword = () => {
                     <div className="form-floating mb-3 position-relative">
                       <Field
                         type={showPassword ? "text" : "password"}
-                        name="newpassword"
+                        name="newPassword"
                         className={`form-control ${
-                          errors.password && touched.password
+                          errors.newPassword && touched.newPassword
                             ? "is-invalid"
                             : ""
                         }`}
-                        id="newpassword"
-                        placeholder="Enter Password"
+                        id="newPassword"
+                        placeholder="Enter New Password"
                       />
                       <button
                         type="button"
@@ -70,11 +101,11 @@ const DoctorResetPassword = () => {
                           />
                         )}
                       </button>
-                      <label htmlFor="newpassword" className="floating-label">
+                      <label htmlFor="newPassword" className="floating-label">
                         New Password
                       </label>
                       <ErrorMessage
-                        name="newpassword"
+                        name="newPassword"
                         component="div"
                         className="invalid-feedback"
                       />
@@ -83,14 +114,14 @@ const DoctorResetPassword = () => {
                     <div className="form-floating mb-3 position-relative">
                       <Field
                         type={showPassword2 ? "text" : "password"}
-                        name="ConfirmPassword"
+                        name="confirmPassword"
                         className={`form-control ${
-                          errors.password && touched.password
+                          errors.confirmPassword && touched.confirmPassword
                             ? "is-invalid"
                             : ""
                         }`}
-                        id="ConfirmPassword"
-                        placeholder="Enter Password"
+                        id="confirmPassword"
+                        placeholder="Confirm New Password"
                       />
                       <button
                         type="button"
@@ -112,13 +143,13 @@ const DoctorResetPassword = () => {
                         )}
                       </button>
                       <label
-                        htmlFor="ConfirmPassword"
+                        htmlFor="confirmPassword"
                         className="floating-label"
                       >
                         Confirm Password
                       </label>
                       <ErrorMessage
-                        name="ConfirmPassword"
+                        name="confirmPassword"
                         component="div"
                         className="invalid-feedback"
                       />

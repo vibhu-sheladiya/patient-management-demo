@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import "./Otp_screen.scss";
 import AuthSlider from "../../../components/auth-slider/AuthSlider";
 import { otpValidationSchema } from "../../../validation/AuthValidation";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Otp_screen = () => {
   const navigate = useNavigate();
+
+  // Get email from localStorage
+  const email = localStorage.getItem("forgotPassEmail");
+
   const initialValues = {
     otp: ["", "", "", "", "", ""],
-  }
+  };
 
   const [timeLeft, setTimeLeft] = useState(30);
 
@@ -24,9 +29,23 @@ const Otp_screen = () => {
     navigate("/reset-password");
   };
 
-  const handleSubmit = (values) => {
-    console.log("OTP entered:", values.otp.join(""));
+  const handleSubmit = async (values) => {
+    try {
+      // Make the API request with the email and OTP
+      const response = await axios.post(
+        "http://localhost:9500/v1/admin/verify-otp",
+        {
+          email, // Pass the stored email
+          otp: values.otp.join(""), // Concatenate the OTP array to a string
+        }
+      );
+
+      resetPasswordNavigation(); // Navigate on success
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+    }
   };
+
   return (
     <section className="otp-section">
       <div className="container-fluid vh-100 d-flex">
@@ -35,7 +54,8 @@ const Otp_screen = () => {
             <div className="otp-card p-4">
               <h2 className="mb-2 otp-title">Enter OTP</h2>
               <h6 className="otp-sub-title mb-4">
-                Please enter the 6 digit code that send to your phone number.
+                Please enter the 6 digit code sent to your phone number or
+                email.
               </h6>
               <Formik
                 initialValues={initialValues}
@@ -44,9 +64,8 @@ const Otp_screen = () => {
               >
                 {({ values, errors, touched, handleChange }) => (
                   <Form className="otp-form">
-                    {/* OTP Inputs */}
                     <div className="otp-input-group d-flex mb-4">
-                      {values.otp.map((_, index) => ( 
+                      {values.otp.map((_, index) => (
                         <Field
                           key={index}
                           type="text"
@@ -62,7 +81,6 @@ const Otp_screen = () => {
                       ))}
                     </div>
 
-                    {/* Timer and Resend */}
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="mb-3 d-flex align-items-center">
                         <img
@@ -70,21 +88,26 @@ const Otp_screen = () => {
                           alt="clock"
                           className="img-fluid me-2"
                         />
-                        <h6 className="otp-time mb-0">{`00:${timeLeft < 10 ? `0${timeLeft}` : timeLeft}`} sec</h6>
+                        <h6 className="otp-time mb-0">
+                          {`00:${timeLeft < 10 ? `0${timeLeft}` : timeLeft}`}{" "}
+                          sec
+                        </h6>
                       </div>
                       <div className="mb-3">
                         {timeLeft === 0 ? (
-                          <Link to={""} className="main-link" onClick={() => setTimeLeft(30)}>
+                          <button
+                            onClick={() => setTimeLeft(30)}
+                            className="main-link"
+                          >
                             Resend OTP
-                          </Link>
+                          </button>
                         ) : (
                           <span className="main-link disabled">Resend OTP</span>
                         )}
                       </div>
                     </div>
 
-                    {/* Submit Button */}
-                    <button type="submit" onClick={resetPasswordNavigation} className="otp-btn w-100">
+                    <button type="submit" className="otp-btn w-100">
                       Verify
                     </button>
                   </Form>

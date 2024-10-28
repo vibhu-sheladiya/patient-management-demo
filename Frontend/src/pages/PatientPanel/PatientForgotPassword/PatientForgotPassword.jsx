@@ -3,10 +3,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { forgotPasswordValidationSchema } from "../../../validation/AuthValidation";
 import AuthSlider from "../../../components/auth-slider/AuthSlider";
 import { Link, useNavigate } from "react-router-dom";
-import "./PatientForgotPassword.scss"
+import "./PatientForgotPassword.scss";
 
 const PatientForgotPassword = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const initialValues = {
     email: "",
   };
@@ -78,7 +78,7 @@ const PatientForgotPassword = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default PatientForgotPassword
+export default PatientForgotPassword;

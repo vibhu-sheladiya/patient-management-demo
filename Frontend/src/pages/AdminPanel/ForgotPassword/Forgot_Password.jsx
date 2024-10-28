@@ -3,10 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { forgotPasswordValidationSchema } from "../../../validation/AuthValidation";
 import AuthSlider from "../../../components/auth-slider/AuthSlider";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios
 import "./Forgot_Password.scss";
 
 const Forgot_Password = () => {
   const navigate = useNavigate();
+
   const initialValues = {
     email: "",
   };
@@ -15,9 +17,36 @@ const Forgot_Password = () => {
     navigate("/otp-verification");
   };
 
-  const handleSubmit = (values) => {
-    console.log("Form values:", values);
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    try {
+      localStorage.removeItem("forgotPassEmail");
+      localStorage.removeItem("adminId");
+      // Make the API request
+      const response = await axios.post(
+        "http://localhost:9500/v1/admin/forgot-pass",
+        {
+          email: values.email,
+        }
+      );
+
+      // Store email and adminId in localStorage
+      const { adminId } = response.data; // Assuming adminId comes from the API response
+      localStorage.setItem("forgotPassEmail", values.email);
+      localStorage.setItem("adminId", adminId);
+      // Handle success - navigate to the OTP verification page
+      otpNavigation();
+    } catch (error) {
+      console.error("Error during API call:", error);
+      if (error.response && error.response.data) {
+        setErrors({
+          email: error.response.data.message || "An error occurred",
+        });
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
+
   return (
     <section className="forgot-section">
       <div className="container-fluid vh-100 d-flex">
@@ -26,7 +55,7 @@ const Forgot_Password = () => {
             <div className="forgot-card p-4">
               <h2 className="mb-2 forgot-title">Forgot Password</h2>
               <h6 className="forgot-sub-title mb-4">
-                Enter your email and we’ll send you a otp to reset your
+                Enter your email and we’ll send you an OTP to reset your
                 password.
               </h6>
               <Formik
@@ -34,7 +63,7 @@ const Forgot_Password = () => {
                 validationSchema={forgotPasswordValidationSchema}
                 onSubmit={handleSubmit}
               >
-                {({ errors, touched }) => (
+                {({ errors, touched, isSubmitting }) => (
                   <Form>
                     <div className="form-floating mb-3">
                       <Field
@@ -56,13 +85,13 @@ const Forgot_Password = () => {
 
                     <button
                       type="submit"
-                      onClick={otpNavigation}
+                      disabled={isSubmitting}
                       className="forgot-btn w-100"
                     >
-                      Get OTP
+                      {isSubmitting ? "Sending..." : "Get OTP"}
                     </button>
                     <div className="text-center">
-                      <Link to={"/login"} className="main-link mt-3">
+                      <Link to={"/"} className="main-link mt-3">
                         Back to Login
                       </Link>
                     </div>

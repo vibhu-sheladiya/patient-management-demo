@@ -22,24 +22,19 @@ const DoctorLogin = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-     
-      const response = await axios.post("http://localhost:9500/v1/doctor/doctor-login", {
-        identifier: values.email, 
-        password: values.password,
-      });
+      const response = await axios.post(
+        "http://localhost:9500/v1/doctor/doctor-login",
+        {
+          identifier: values.email,
+          password: values.password,
+        }
+      );
 
-    
-      console.log("Login successful:", response.data);
-
-    
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("refreshToken", response.data.refreshToken);
 
-
-      
       navigate("/doctorProfile");
     } catch (error) {
-      
       setErrorMessage(error.response?.data?.message || "Something went wrong");
       console.error("Login error:", error);
     } finally {

@@ -3,10 +3,15 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import AuthSlider from "../../../components/auth-slider/AuthSlider";
 import { otpValidationSchema } from "../../../validation/AuthValidation";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios for API requests
 import "./DoctorOtpScreen.scss";
 
 const DoctorOtpScreen = () => {
   const navigate = useNavigate();
+
+  // Get email from localStorage
+  const email = localStorage.getItem("forgotPassEmail");
+
   const initialValues = {
     otp: ["", "", "", "", "", ""],
   };
@@ -21,12 +26,25 @@ const DoctorOtpScreen = () => {
   }, [timeLeft]);
 
   const resetPasswordNavigation = () => {
-    navigate("/doctor-reset-password");
+    navigate("/reset-password");
   };
 
-  const handleSubmit = (values) => {
-    console.log("OTP entered:", values.otp.join(""));
+  const handleSubmit = async (values) => {
+    try {
+      // Make the API request with the email and OTP
+      const response = await axios.post(
+        "http://localhost:9500/v1/doctor/verify-otp",
+        {
+          email, // Pass the stored email
+          otp: values.otp.join(""), // Concatenate the OTP array to a string
+        }
+      );
+      navigate("/doctor-reset-password"); // Navigate on success
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+    }
   };
+
   return (
     <section className="otp-section">
       <div className="container-fluid vh-100 d-flex">
@@ -35,7 +53,8 @@ const DoctorOtpScreen = () => {
             <div className="otp-card p-4">
               <h2 className="mb-2 otp-title">Enter OTP</h2>
               <h6 className="otp-sub-title mb-4">
-                Please enter the 6 digit code that send to your phone number.
+                Please enter the 6 digit code sent to your phone number or
+                email.
               </h6>
               <Formik
                 initialValues={initialValues}
@@ -44,7 +63,6 @@ const DoctorOtpScreen = () => {
               >
                 {({ values, errors, touched, handleChange }) => (
                   <Form className="otp-form">
-                    {/* OTP Inputs */}
                     <div className="otp-input-group d-flex mb-4">
                       {values.otp.map((_, index) => (
                         <Field
@@ -62,7 +80,6 @@ const DoctorOtpScreen = () => {
                       ))}
                     </div>
 
-                    {/* Timer and Resend */}
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="mb-3 d-flex align-items-center">
                         <img
@@ -77,25 +94,19 @@ const DoctorOtpScreen = () => {
                       </div>
                       <div className="mb-3">
                         {timeLeft === 0 ? (
-                          <Link
-                            to={""}
-                            className="main-link"
+                          <button
                             onClick={() => setTimeLeft(30)}
+                            className="main-link"
                           >
                             Resend OTP
-                          </Link>
+                          </button>
                         ) : (
                           <span className="main-link disabled">Resend OTP</span>
                         )}
                       </div>
                     </div>
 
-                    {/* Submit Button */}
-                    <button
-                      type="submit"
-                      onClick={resetPasswordNavigation}
-                      className="otp-btn w-100"
-                    >
+                    <button type="submit" className="otp-btn w-100">
                       Verify
                     </button>
                   </Form>

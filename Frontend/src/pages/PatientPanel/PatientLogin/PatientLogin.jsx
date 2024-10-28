@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import axios from "axios";
 import AuthSlider from "../../../components/auth-slider/AuthSlider";
 import { Link } from "react-router-dom";
-import { loginValidationSchema } from "../../../validation/AuthValidation";
+import * as Yup from "yup"; // Ensure you import Yup for validation
 import "./PatientLogin.scss";
+import { loginValidationSchema } from "../../../validation/AuthValidation";
 
 const PatientLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,10 +20,25 @@ const PatientLogin = () => {
     rememberMe: false,
   };
 
-  const handleSubmit = (values) => {
-    console.log("Form values:", values);
-    // Add your login logic here (e.g., API call)
+  const handleSubmit = async (values) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:9500/v1/patient/patient-login",
+        {
+          identifier: values.email,
+          password: values.password,
+        }
+      );
+      localStorage.setItem("patientId", response.data.patientId);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("patient", JSON.stringify(response.data));
+      // Handle successful login (e.g., save token, redirect)
+    } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message);
+      // Handle login error (e.g., show error message)
+    }
   };
+
   return (
     <section className="login-section">
       <div className="container-fluid vh-100 d-flex">
@@ -38,7 +55,7 @@ const PatientLogin = () => {
                   <Form>
                     <div className="form-floating mb-3">
                       <Field
-                        type="email"
+                        type="text"
                         name="email"
                         className={`form-control ${
                           errors.email && touched.email ? "is-invalid" : ""

@@ -4,19 +4,41 @@ import { forgotPasswordValidationSchema } from "../../../validation/AuthValidati
 import AuthSlider from "../../../components/auth-slider/AuthSlider";
 import { Link, useNavigate } from "react-router-dom";
 import "./DoctorForgotPassword.scss";
-
+import axios from "axios";
 const DoctorForgotPassword = () => {
   const navigate = useNavigate();
   const initialValues = {
     email: "",
   };
 
-  const otpNavigation = () => {
-    navigate("/doctor-otp-verification");
-  };
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    try {
+      localStorage.removeItem("forgotPassEmail");
+      localStorage.removeItem("adminId");
+      // Make the API request
+      const response = await axios.post(
+        "http://localhost:9500/v1/doctor/forgot-pass",
+        {
+          email: values.email,
+        }
+      );
 
-  const handleSubmit = (values) => {
-    console.log("Form values:", values);
+      // Store email and adminId in localStorage
+      const { doctorId } = response.data; // Assuming adminId comes from the API response
+      localStorage.setItem("forgotPassEmail", values.email);
+      localStorage.setItem("doctorId", doctorId);
+      // Handle success - navigate to the OTP verification page
+      navigate("/doctor-otp-verification");
+    } catch (error) {
+      console.error("Error during API call:", error);
+      if (error.response && error.response.data) {
+        setErrors({
+          email: error.response.data.message || "An error occurred",
+        });
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <section className="forgot-section">
@@ -26,7 +48,7 @@ const DoctorForgotPassword = () => {
             <div className="forgot-card p-4">
               <h2 className="mb-2 forgot-title">Forgot Password</h2>
               <h6 className="forgot-sub-title mb-4">
-                Enter your email and we’ll send you a otp to reset your
+                Enter your email and we’ll send you an OTP to reset your
                 password.
               </h6>
               <Formik
@@ -34,7 +56,7 @@ const DoctorForgotPassword = () => {
                 validationSchema={forgotPasswordValidationSchema}
                 onSubmit={handleSubmit}
               >
-                {({ errors, touched }) => (
+                {({ errors, touched, isSubmitting }) => (
                   <Form>
                     <div className="form-floating mb-3">
                       <Field
@@ -56,13 +78,13 @@ const DoctorForgotPassword = () => {
 
                     <button
                       type="submit"
-                      onClick={otpNavigation}
+                      disabled={isSubmitting}
                       className="forgot-btn w-100"
                     >
-                      Get OTP
+                      {isSubmitting ? "Sending..." : "Get OTP"}
                     </button>
                     <div className="text-center">
-                      <Link to={"/doctor-login"} className="main-link mt-3">
+                      <Link to={"/"} className="main-link mt-3">
                         Back to Login
                       </Link>
                     </div>
