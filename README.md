@@ -1,15 +1,23 @@
 📋 Patient Management Demo
+
+
 🏥 Healthcare Management System
+
 Overview
+
 This Healthcare Management System is a web application designed to facilitate efficient management of healthcare services. The system allows different user roles, including Admin, Doctor, and Patient, to perform various tasks and communicate seamlessly using technologies like Socket.IO and PayPal for payments.
 
+
 Features
+
 👨‍💼 Admin Features
 Create Hospitals: Admin can add new hospitals to the system. 🏥
 Manage Doctors: Admin can create, update, or remove doctor profiles. 🩺
 Manage Patients: Admin can create, update, or remove patient profiles. 👩‍⚕️
 View Reports: Admin can view reports and statistics related to hospitals, doctors, and patients. 📊
+
 👨‍⚕️ Doctor Features
+
 Manage Patients: Doctors can view their patients' profiles, update details, and manage appointments. 📋
 Create Prescriptions: Doctors can create and manage prescriptions for their patients. 💊
 Chat: Real-time chat functionality with patients using Socket.IO. 💬
