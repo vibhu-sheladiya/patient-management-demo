@@ -34,7 +34,7 @@ app.use(express.static(path.resolve(__dirname, `./src/public`)));
 
 
 app.get('/',(req,res)=>{
-res.json("hello")
+res.json("hello world")
 })
 app.use("/v1", routes);
 
