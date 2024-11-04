@@ -62,8 +62,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
-});localhost:9500/v1/bill/list-bill
-
+});
 
 // Start server with database connection
 const startServer = async () => {
