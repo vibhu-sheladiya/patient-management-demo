@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const { connectDB } = require("./db/dbConnection");
 const config = require("./config/config");
 const cors = require("cors");
-// const routes = require("./src/routes/v1");
+const routes = require("./routes/v1");
 const path = require("path");
 // const errorHandler = require("./src/helpers/error");
 // const Chat = require('./src/models/chat.model');
@@ -30,15 +30,15 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(express.static(path.resolve(__dirname, `./src/public`)));
+app.use(express.static(path.resolve(__dirname, `./src/public`)));
 
 
 app.get('/',(req,res)=>{
 res.json("hello")
 })
-// app.use("/v1", routes);
+app.use("/v1", routes);
 
-// app.use("/public/adminImg", express.static(path.join(__dirname, "./src/public/adminImg")));
+app.use("/public/adminImg", express.static(path.join(__dirname, "./src/public/adminImg")));
 
 // Error handler middleware
 // app.use(errorHandler);
