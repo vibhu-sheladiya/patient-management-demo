@@ -65,7 +65,17 @@ io.on('connection', (socket) => {
 });
 
 
-// Start the server
-server.listen(config.port, () => {
-  console.log("Server listening on port " + config.port);
-});
+// Start server with database connection
+const startServer = async () => {
+  try {
+    await connectDB(); // Connect to the database before starting the server
+    server.listen(config.port, () => {
+      console.log("Server listening on port " + config.port);
+    });
+  } catch (error) {
+    console.error("Error starting the server:", error);
+    process.exit(1); // Exit the process with a failure
+  }
+};
+
+startServer();
