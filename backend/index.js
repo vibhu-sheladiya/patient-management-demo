@@ -30,6 +30,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.resolve(__dirname, `./src/public`)));
 app.use("/v1", routes);
+
+app.get('/',(req,res)=>{
+res.json("hello")
+})
 app.use("/public/adminImg", express.static(path.join(__dirname, "./src/public/adminImg")));
 
 // Error handler middleware
