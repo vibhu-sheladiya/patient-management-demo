@@ -14,6 +14,8 @@ const chatController = require('./src/controllers/chats/chat.controller');
 const app = express();
 const server = http.createServer(app);
 
+
+connectDB();
 // Attach socket.io to the server
 const io = socketIO(server, {
   cors: {
@@ -42,7 +44,6 @@ app.use("/public/adminImg", express.static(path.join(__dirname, "./src/public/ad
 app.use(errorHandler);
 
 // Connect to the database
-connectDB();
 
 // Socket.IO connection event handler
 io.on('connection', (socket) => {
