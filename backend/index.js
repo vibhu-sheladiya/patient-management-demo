@@ -67,8 +67,16 @@ app.use(errorHandler);
 
 // Start server with database connection
 // Start the server
-server.listen(config.port, () => {
-  console.log("Server listening on port " + config.port);
-});
+// server.listen(config.port, () => {
+//   console.log("Server listening on port " + config.port);
+// });
 
+const startServer = async () => {
+  await connectDB();  // Ensure database connection is established
+  app.listen(config.port, () => {
+    console.log("Server is running on port 3000");
+  });
+};
+
+startServer();
 // startServer();
