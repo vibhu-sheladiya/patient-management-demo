@@ -36,7 +36,7 @@ app.use(express.static(path.resolve(__dirname, `./src/public`)));
 app.use("/v1", routes);
 
 app.get('/',(req,res)=>{
-res.json("hello world")
+res.json("hello worldfhrfh")
 })
 
 app.use("/public/adminImg", express.static(path.join(__dirname, "./src/public/adminImg")));
