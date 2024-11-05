@@ -11,7 +11,7 @@ const validate = require("../../../middlewares/validate");
 /* ------------------------------- DOCTOR AUTH ------------------------------ */
 
 /* -------------------------- CREATE/SIGNUP DOCTOR ----------- */
-router.post("/create-admin", validate(adminAuthValidation.createAdminRegister), authAdminController.register);
+router.post("/create-admin",  authAdminController.register);
 
 /* -------------------------- LOGIN DOCTOR ----------- */
 router.post("/admin-login", 
