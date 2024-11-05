@@ -33,8 +33,6 @@ const chatRoute = require("./chat/chat.route")
 
 
 
-
-
 const router = express.Router();
 
 /* -------------------------- ROUTE DEFINE -------------------------- */

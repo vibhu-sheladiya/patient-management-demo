@@ -1,7 +1,7 @@
 const http = require("http");
 const express = require("express");
 const bodyParser = require("body-parser");
-const { connectDB } = require("./db/dbConnection");
+const { connectDB } = require("./db/dbConnection.js");
 const config = require("./config/config");
 const cors = require("cors");
 const routes = require("./routes/v1");
@@ -66,16 +66,9 @@ app.use(errorHandler);
 // });
 
 // Start server with database connection
-const startServer = async () => {
-  try {
-    await connectDB(); // Connect to the database before starting the server
-    server.listen(config.port, () => {
-      console.log("Server listening on port " + config.port);
-    });
-  } catch (error) {
-    console.error("Error starting the server:", error);
-    process.exit(1); // Exit the process with a failure
-  }
-};
+// Start the server
+server.listen(config.port, () => {
+  console.log("Server listening on port " + config.port);
+});
 
-startServer();
+// startServer();
