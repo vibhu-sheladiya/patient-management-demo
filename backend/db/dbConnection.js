@@ -3,7 +3,12 @@ const config = require("../config/config");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(config.mongodb.url); // Removed deprecated options
+    await mongoose.connect(config.mongodb.url, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      connectTimeoutMS: 20000,   // Set connection timeout to 20 seconds
+      socketTimeoutMS: 45000,    // Set socket timeout to 45 seconds
+    });
     console.log("Database connection successful!");
   } catch (error) {
     console.error("Database connection error:", error);
