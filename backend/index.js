@@ -17,12 +17,12 @@ const server = http.createServer(app);
 
 connectDB();
 // Attach socket.io to the server
-const io = socketIO(server, {
-  cors: {
-    origin: "*", 
-    methods: ["GET", "POST"]
-  }
-});
+// const io = socketIO(server, {
+//   cors: {
+//     origin: "*", 
+//     methods: ["GET", "POST"]
+//   }
+// });
 
 // Middlewaresapp.use(express.json());
 app.use(express.json());
@@ -47,23 +47,23 @@ app.use(errorHandler);
 // Connect to the database
 
 // Socket.IO connection event handler
-io.on('connection', (socket) => {
-  console.log('New user connected:', socket.id);
+// io.on('connection', (socket) => {
+//   console.log('New user connected:', socket.id);
 
-  // Listen for the 'send_message' event
-  socket.on('send_message', async (data) => {
-    // Emit the message to everyone (including sender and receiver)
-    io.emit('receive_message', data); // Broadcast to both patient and doctor
+//   // Listen for the 'send_message' event
+//   socket.on('send_message', async (data) => {
+//     // Emit the message to everyone (including sender and receiver)
+//     io.emit('receive_message', data); // Broadcast to both patient and doctor
 
-    // Save the message in the database
-    await chatController.saveMessage(data);
-  });
+//     // Save the message in the database
+//     await chatController.saveMessage(data);
+//   });
 
-  // Handle disconnection
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-  });
-});
+//   // Handle disconnection
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected:', socket.id);
+//   });
+// });
 
 // Start server with database connection
 const startServer = async () => {
