@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.resolve(__dirname, `./src/public`)));
+// app.use(express.static(path.resolve(__dirname, `./src/public`)));
 
 
 app.use("/v1", routes);
@@ -39,7 +39,7 @@ app.get('/',(req,res)=>{
 res.json("hello worldfhrfh")
 })
 
-app.use("/public/adminImg", express.static(path.join(__dirname, "./src/public/adminImg")));
+// app.use("/public/adminImg", express.static(path.join(__dirname, "./src/public/adminImg")));
 
 // Error handler middleware
 app.use(errorHandler);
