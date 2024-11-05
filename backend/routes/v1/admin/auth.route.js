@@ -6,8 +6,8 @@ const { authAdminController, adminController, doctorController } = require("../.
 const authenticAdmin = require("../../../middlewares/adminAuth");
 const { singleFileUpload, multiDiffFileUpload } = require("../../../helpers/upload");
 const multer = require('multer');
-const { adminAuthValidation } = require("../../../validations");
-const validate = require("../../../middlewares/validate");
+// const { adminAuthValidation } = require("../../../validations");
+// const validate = require("../../../middlewares/validate");
 /* ------------------------------- DOCTOR AUTH ------------------------------ */
 
 /* -------------------------- CREATE/SIGNUP DOCTOR ----------- */
