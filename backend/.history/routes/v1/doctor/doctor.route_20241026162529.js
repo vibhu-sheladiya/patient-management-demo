@@ -40,4 +40,8 @@ router.put(
   doctorOwnController.updateDoctor // Controller function to handle the update
 );
 
+
+
+
+
 module.exports = router;
